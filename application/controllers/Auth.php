@@ -16,14 +16,37 @@ class Auth extends CI_Controller
 
         $user = $this->db->get_where('user', ['email' => $email])->row_array();
 
+        // jika usernya ada
         if ($user) {
-            // user terdaftar
+            // jika user aktif
+            if ($user['is_active'] == 1) {
+                // cek password
+                if (password_verify($password, $user['password'])) {
+                    $data = [
+                        "email" => $user['email'],
+                        "role_id" => $user['role_id']
+                    ];
+                    $this->session->set_userdata($data);
+
+                    // cek role
+                    if ($user['role_id'] == 1) {
+                        redirect('admin');
+                    } else {
+                        redirect('user');
+                    }
+                } else {
+                    // password wrong
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Password Wrong !</div>');
+                    redirect('auth');
+                }
+            } else {
+                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">This email has not been activated</div>');
+                redirect('auth');
+            }
         } else {
             $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Email is not registered</div>');
             redirect('auth');
         }
-        // var_dump($user);
-        // die;
     }
 
     public function index()
@@ -66,10 +89,10 @@ class Auth extends CI_Controller
             $this->load->view('templates/auth_footer');
         } else {
             $data = [
-                'name' => $this->input->post('name'),
-                'email' => $this->input->post('email'),
+                'name' => htmlspecialchars($this->input->post('name', true)),
+                'email' => htmlspecialchars($this->input->post('email', true)),
                 'image' => 'default.jpg',
-                'password' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
+                'password' => password_hash($this->input->post('password1'), PASSWORD_DEFAULT),
                 'role_id' => 2,
                 'is_active' => 1,
                 'date_created' => time()
@@ -79,5 +102,14 @@ class Auth extends CI_Controller
             $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Congratulation, Your account has been created, Please Login</div>');
             redirect('auth');
         }
+    }
+
+    public function logout()
+    {
+        $this->session->unset_userdata('email');
+        $this->session->unset_userdata('role_id');
+
+        $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Logout Success</div>');
+        redirect('auth');
     }
 }

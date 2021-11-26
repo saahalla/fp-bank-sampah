@@ -12,7 +12,7 @@
                         <div class="col-lg">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">Login Page</h1>
+                                    <h1 class="h4 text-gray-900 mb-4">Login <span class="text-primary"><b>BSampah <sup>TI</sup></b></span></h1>
                                 </div>
                                 <?php echo $this->session->flashdata('message'); ?>
                                 <form class="user" method="post" action="<?= base_url('auth') ?>">
@@ -29,9 +29,6 @@
                                     </button>
                                 </form>
                                 <hr>
-                                <div class="text-center">
-                                    <a class="small" href="forgot-password.html">Forgot Password?</a>
-                                </div>
                                 <div class="text-center">
                                     <a class="small" href="<?= base_url('auth/register') ?>">Create an Account!</a>
                                 </div>

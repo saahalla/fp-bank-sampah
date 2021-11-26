@@ -20,4 +20,7 @@
 
 </head>
 
-<body class="bg-light">
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
